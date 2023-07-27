@@ -1,0 +1,16 @@
+# Listner Configuration
+http:
+  host: "0.0.0.0"
+  port: "8081"
+  basePath: "api/*"
+  
+# Api Configuration
+api:
+  id: "18155979"  
+
+# Salesforce Configuration
+sfdc:
+ Token: "![oJ1F4Aq0ZVPoVjzf0ih08ayMIW9KqOVguHKcJqVHVqA=]"
+ password: "![HNi6NXKpk/X5EaX6QhoSag==]"
+ URL: "![zkX+z8aYErwWbaJtrpjZL57qUdh8MICf2D32K+K2UmPVDWCO4hlHCDo1Qm4UAvF4XV+q1M+obwQ=]"
+ UserName: "![aYSsjcrJR8pZkT8u2Ke8nOI3lcIILjieq0F3dfeR5Dk=]"

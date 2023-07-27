@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
+    <flow name="s-order-management-api-main">
+        <http:listener config-ref="s-order-management-api-httpListenerConfig" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="s-order-management-api-config" />
+        <error-handler ref="error_Handler" />
+    </flow>
+    <flow name="s-order-management-api-console">
+        <http:listener config-ref="s-order-management-api-httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="s-order-management-api-config" />
+        <error-handler>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+                <ee:transform>
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Resource not found"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">404</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+        </error-handler>
+    </flow>
+    <flow name="get:\customers:s-order-management-api-config">
+        <flow-ref doc:name="get-customers-details" doc:id="fc3df249-bf7f-46ec-a69e-c54f07cbf969" name="get-customers-details" />
+    </flow>
+    <flow name="get:\item:s-order-management-api-config">
+        <flow-ref doc:name="get-item-details" doc:id="306853c3-512b-45b5-803e-ac69a068ac0b" name="get-items-details" />
+    </flow>
+    <flow name="get:\order:s-order-management-api-config">
+        <flow-ref doc:name="get-orders-details" doc:id="1d74abc2-970c-4ea3-b2b1-7417e1186ab4" name="get-orders-details" />
+    </flow>
+    <flow name="post:\customers:application\json:s-order-management-api-config">
+        <flow-ref doc:name="post-customers" doc:id="0f9a7710-cd44-41a1-9511-380dd68fcf0c" name="post-customers" />
+    </flow>
+    <flow name="post:\item:application\json:s-order-management-api-config">
+        <flow-ref doc:name="post-item" doc:id="af92461c-eab3-4a42-a184-763191a4d820" name="post-item" />
+    </flow>
+    <flow name="post:\order:application\json:s-order-management-api-config">
+        <flow-ref doc:name="post-orders" doc:id="48e5580c-caba-435f-a2d5-26c2c3e891c6" name="post-orders" />
+    </flow>
+</mule>

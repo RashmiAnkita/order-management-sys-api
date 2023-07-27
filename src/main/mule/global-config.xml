@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation=" http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
+    <salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="4c7947f1-94d8-4041-8b5e-5d0336e1317b">
+        <salesforce:basic-connection username="${secure::sfdc.UserName}" password="${secure::sfdc.password}" securityToken="${secure::sfdc.Token}" url="${secure::sfdc.URL}" />
+    </salesforce:sfdc-config>
+    <configuration-properties doc:name="Configuration properties" doc:id="b31eb07e-7cd6-42c9-84e5-0f77f72734ae" file="config.yaml" />
+    <http:listener-config name="s-order-management-api-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="8081" />
+    </http:listener-config>
+    <apikit:config name="s-order-management-api-config" api="resource::ce235d46-115c-497c-b0e2-474afd80f5e9:s-order-management-api:1.0.2:raml:zip:s-order-management-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <api-gateway:autodiscovery apiId="18155979" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="a5e76fd9-7323-4b9d-a69c-46ff991e3bf9" flowRef="s-order-management-api-main" />
+    <secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="94f2f1a7-ccc9-4fec-b094-305e4f7f0421" file="secure.yaml" key="${secure.key}">
+        <secure-properties:encrypt algorithm="Blowfish" />
+    </secure-properties:config>
+    <global-property doc:name="Global Property" doc:id="0c5339e4-22c0-4645-922b-21532544e784" name="secure.key" value="12345" />
+    <configuration doc:name="Configuration" doc:id="a6a1b301-d06c-4af4-aba7-b530cd17c313" defaultErrorHandler-ref="error_Handler" />
+</mule>

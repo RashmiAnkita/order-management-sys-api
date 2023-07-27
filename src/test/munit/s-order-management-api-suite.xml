@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="s-order-management-api-suite.xml" />
+	<munit:test name="post:\order:application\json:s-order-management-api-config-test" doc:id="d5954a99-7f96-4476-975b-84f391df757b" >
+		<munit:behavior >
+			<munit:set-event doc:name="Set Input" doc:id="2ab91ea8-33ac-4b26-8d26-fd132ad8bc62" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://postorderapplicationjsonsordermanagementapiconfigtest\set-event_payload1.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://postorderapplicationjsonsordermanagementapiconfigtest\set-event_attributes1.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://postorderapplicationjsonsordermanagementapiconfigtest\set-event_variable_1.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to post:\order:application\json:s-order-management-api-config" doc:id="35f4e667-72c0-4e87-8fa8-a59e9eb705c7" name="post:\order:application\json:s-order-management-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="11e3591a-92c0-4757-9890-12f21eb83a54" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import postorderapplicationjsonsordermanagementapiconfigtest::assert_expression_payload1
+---
+assert_expression_payload1::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+			<munit-tools:verify-call doc:name="Verify post-orders" doc:id="97f9ee66-8092-44cc-a1ce-664cb78bcd53" processor="flow-ref" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="48e5580c-caba-435f-a2d5-26c2c3e891c6" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>
